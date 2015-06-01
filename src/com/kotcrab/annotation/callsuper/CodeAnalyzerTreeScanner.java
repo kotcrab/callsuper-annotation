@@ -1,42 +1,81 @@
 package com.kotcrab.annotation.callsuper;
 
+import com.kotcrab.annotation.CallSuper;
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.util.TreePathScanner;
 import com.sun.source.util.Trees;
-import com.sun.tools.javac.tree.JCTree;
+import com.sun.tools.javac.code.Scope;
+import com.sun.tools.javac.code.Symbol;
+import com.sun.tools.javac.code.Symbol.MethodSymbol;
+import com.sun.tools.javac.code.Type.ClassType;
+import com.sun.tools.javac.tree.JCTree.JCIdent;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.annotation.processing.ProcessingEnvironment;
+import java.lang.annotation.Annotation;
 
-public class CodeAnalyzerTreeScanner extends TreePathScanner<Object, Trees> {
+class CodeAnalyzerTreeScanner extends TreePathScanner<Object, Trees> {
 	private String methodName;
-	private String baseClassName;
+	private MethodTree method;
+	private boolean callSuperUsed;
 
-	private ArrayList<MethodTree> methodOverriders = new ArrayList<>();
+	public ProcessingEnvironment prEnv;
 
 	@Override
 	public Object visitClass (ClassTree classTree, Trees trees) {
-		if (checkMatch(classTree)) {
-			List<? extends Tree> members = classTree.getMembers();
+		Tree extendTree = classTree.getExtendsClause();
+		if (extendTree instanceof JCIdent) {
+			JCIdent tree = (JCIdent) extendTree;
+			Scope members = tree.sym.members();
 
-			for (Tree tree : members) {
-				if (tree instanceof MethodTree) {
-					MethodTree methodTree = (MethodTree) tree;
-					if (methodTree.getName().toString().equals(methodName)) methodOverriders.add(methodTree);
-				}
-			}
+			if (checkScope(members))
+				return super.visitClass(classTree, trees);
+
+			if (checkSuperTypes((ClassType) tree.type))
+				return super.visitClass(classTree, trees);
+
 		}
+		callSuperUsed = false;
 
 		return super.visitClass(classTree, trees);
 	}
 
-	private boolean checkMatch (ClassTree classTree) {
-		Tree extendTree = classTree.getExtendsClause();
+	public boolean checkSuperTypes (ClassType type) {
+		if (type.supertype_field.tsym != null) {
+			if (checkScope(type.supertype_field.tsym.members()))
+				return true;
+			else
+				return checkSuperTypes((ClassType) type.supertype_field);
+		}
 
-		return extendTree instanceof JCTree.JCIdent && (((JCTree.JCIdent) extendTree).sym).toString().equals(baseClassName);
+		return false;
+	}
 
+	public boolean checkScope (Scope members) {
+		for (Symbol s : members.getElements()) {
+			if (s instanceof MethodSymbol) {
+				MethodSymbol ms = (MethodSymbol) s;
+
+				if (ms.getSimpleName().toString().equals(methodName)) {
+					Annotation annotation = ms.getAnnotation(CallSuper.class);
+					if (annotation != null) {
+						callSuperUsed = true;
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public Object visitMethod (MethodTree methodTree, Trees trees) {
+		if (methodTree.getName().toString().equals(methodName))
+			method = methodTree;
+
+		return super.visitMethod(methodTree, trees);
 	}
 
 	public void setMethodName (String methodName) {
@@ -47,15 +86,11 @@ public class CodeAnalyzerTreeScanner extends TreePathScanner<Object, Trees> {
 		return methodName;
 	}
 
-	public void setBaseClassName (String baseClassName) {
-		this.baseClassName = baseClassName;
+	public MethodTree getMethod () {
+		return method;
 	}
 
-	public String getBaseClassName () {
-		return baseClassName;
-	}
-
-	public void setMethodOverriders (ArrayList<MethodTree> methodOverriders) {
-		this.methodOverriders = methodOverriders;
+	public boolean isCallSuperUsed () {
+		return callSuperUsed;
 	}
 }
