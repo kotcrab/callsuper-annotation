@@ -16,7 +16,7 @@
 
 package com.kotcrab.annotation.callsuper;
 
-import com.kotcrab.annotation.CallSuperOverride;
+import com.kotcrab.annotation.OverrideCallSuper;
 import com.sun.source.util.TreePath;
 import com.sun.source.util.Trees;
 import com.sun.tools.javac.tree.JCTree;
@@ -43,7 +43,7 @@ public class CallSuperProcessor extends AbstractProcessor {
 
 	public boolean process (Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		for (Element e : roundEnv.getElementsAnnotatedWith(Override.class)) {
-			if (e.getAnnotation(CallSuperOverride.class) != null) return false;
+			if (e.getAnnotation(OverrideCallSuper.class) != null) return false;
 
 			CodeAnalyzerTreeScanner codeScanner = new CodeAnalyzerTreeScanner();
 			codeScanner.prEnv = processingEnv;
