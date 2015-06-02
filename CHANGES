@@ -1,4 +1,6 @@
-[0.1.1] [Snapshot]
+[0.1.2] [Snapshot]
+
+[0.1.1]
 -Fixed call super checking for classes that uses generic
 
 [0.1.0]

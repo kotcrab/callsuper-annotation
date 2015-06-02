@@ -4,8 +4,8 @@
 
 Java annotation that forces you to call super method if it was annotated with CallSuper. Inspired by upcoming CallSuper annotation in Android shown at Google IO 2015. This library is currently provided as experimental version, please report any issues.
 
-Current version: 0.1.0  
-Current snapshot version: 0.1.1-SNAPSHOT
+Current version: 0.1.1  
+Current snapshot version: 0.1.2-SNAPSHOT
 
 Maven:
 ```
