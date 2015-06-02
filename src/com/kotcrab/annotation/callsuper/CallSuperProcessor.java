@@ -46,7 +46,6 @@ public class CallSuperProcessor extends AbstractProcessor {
 			if (e.getAnnotation(OverrideCallSuper.class) != null) return false;
 
 			CodeAnalyzerTreeScanner codeScanner = new CodeAnalyzerTreeScanner();
-			codeScanner.prEnv = processingEnv;
 			codeScanner.setMethodName(e.getSimpleName().toString());
 
 			TreePath tp = trees.getPath(e.getEnclosingElement());

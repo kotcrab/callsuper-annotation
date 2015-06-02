@@ -27,8 +27,8 @@ import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.MethodSymbol;
 import com.sun.tools.javac.code.Type.ClassType;
 import com.sun.tools.javac.tree.JCTree.JCIdent;
+import com.sun.tools.javac.tree.JCTree.JCTypeApply;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import java.lang.annotation.Annotation;
 
 class CodeAnalyzerTreeScanner extends TreePathScanner<Object, Trees> {
@@ -36,11 +36,15 @@ class CodeAnalyzerTreeScanner extends TreePathScanner<Object, Trees> {
 	private MethodTree method;
 	private boolean callSuperUsed;
 
-	public ProcessingEnvironment prEnv;
-
 	@Override
 	public Object visitClass (ClassTree classTree, Trees trees) {
 		Tree extendTree = classTree.getExtendsClause();
+
+		if (extendTree instanceof JCTypeApply) { //generic classes case
+			JCTypeApply generic = (JCTypeApply) extendTree;
+			extendTree = generic.clazz;
+		}
+
 		if (extendTree instanceof JCIdent) {
 			JCIdent tree = (JCIdent) extendTree;
 			Scope members = tree.sym.members();
@@ -58,7 +62,7 @@ class CodeAnalyzerTreeScanner extends TreePathScanner<Object, Trees> {
 	}
 
 	public boolean checkSuperTypes (ClassType type) {
-		if (type.supertype_field.tsym != null) {
+		if (type.supertype_field != null && type.supertype_field.tsym != null) {
 			if (checkScope(type.supertype_field.tsym.members()))
 				return true;
 			else
