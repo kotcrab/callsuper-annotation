@@ -1,4 +1,5 @@
 [0.1.2] [Snapshot]
+-Fixed pom dependencies
 
 [0.1.1]
 -Fixed call super checking for classes that uses generic
