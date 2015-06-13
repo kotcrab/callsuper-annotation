@@ -16,7 +16,23 @@ Maven:
 </dependency>
 ```
 
-Don't forget to enable annotation processing in your IDE!
+Don't forget to enable annotation processing in your IDE and build tools!
+
+Maven:
+```
+<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
+        <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+                <annotationProcessors>
+                     <annotationProcessor>com.kotcrab.annotation.callsuper.CallSuperProcessor</annotationProcessor>
+                </annotationProcessors>
+        </configuration>
+</plugin>
+```
 
 ### Usage:
 ```java
