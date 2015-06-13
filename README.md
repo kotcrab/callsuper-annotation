@@ -8,7 +8,7 @@ Current version: 0.1.2
 Current snapshot version: 0.1.3-SNAPSHOT
 
 Maven:
-```
+```xml
 <dependency>
      <groupId>com.kotcrab.annotation</groupId>
      <artifactId>callsuper</artifactId>
@@ -19,7 +19,7 @@ Maven:
 Don't forget to enable annotation processing in your IDE and build tools!
 
 Maven:
-```
+```xml
 <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
