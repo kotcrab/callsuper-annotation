@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Set;
 
 @SupportedAnnotationTypes("java.lang.Override") //processor is triggered by Override annotation
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class CallSuperProcessor extends AbstractProcessor {
 	private Trees trees;
 
@@ -76,5 +75,10 @@ public class CallSuperProcessor extends AbstractProcessor {
 		}
 
 		return false;
+	}
+
+	@Override
+	public SourceVersion getSupportedSourceVersion () {
+		return SourceVersion.latest();
 	}
 }
