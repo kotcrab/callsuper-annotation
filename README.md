@@ -65,3 +65,6 @@ class TestClass extends SuperClass {
 	}
 }
 ```
+### Issues and limitations
+- `@Override` annotation is required to trigger annotation processor - [#1](https://github.com/kotcrab/callsuper-annotation/issues/1)
+- Anonymous classes are not processed by annotation processor thus can't be checked if super was called - [#8](https://github.com/kotcrab/callsuper-annotation/issues/8)
