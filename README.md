@@ -1,7 +1,5 @@
 # callsuper-annotation
 
-[![Build Status](http://kotcrab.com:8080/buildStatus/icon?job=callsuper)](http://kotcrab.com:8080/job/callsuper/)
-
 Java annotation that forces you to call super method if it was annotated with CallSuper. Inspired by upcoming CallSuper annotation in Android shown at Google IO 2015. This library is currently provided as experimental version, please report any issues.
 
 Current version: 0.1.3  
